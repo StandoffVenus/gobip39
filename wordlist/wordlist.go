@@ -39,16 +39,24 @@ type Wordlist interface {
 // Takes array of strings to search for passed string in.
 // Returns int of b's position in a, -1 if not found.
 func FindWordIn(a []string, b string) int {
-	initialLength := len(a) / 2
-	index := initialLength
+	low := 0
+	high := len(a) - 1
+	var index int
 
 	for {
-		if (a[index] > b) {
-			index -= initialLength / 2
-		}
+		if (high < low) { break }
+
+		index = (low + high) / 2
+
 		if (a[index] < b) {
-			index += index
+			low = index + 1
+		} else if (a[index] > b) {
+			high = index - 1
+		} else {
+			return index
 		}
 	}
+
+	return -1
 }
 
