@@ -6,7 +6,6 @@ const (
 
 // Error type specifically for wordlist errors
 type wordlistError struct {
-	error
 	Message string
 }
 

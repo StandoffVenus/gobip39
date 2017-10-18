@@ -19,7 +19,6 @@ const (
 
 // Error type specifically for entropy errors
 type entropyError struct {
-	error
 	Message string
 }
 

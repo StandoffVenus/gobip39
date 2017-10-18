@@ -17,7 +17,6 @@ const (
 
 // Error type specifically for mnemonic errors
 type mnemonicError struct {
-	error
 	Message string
 }
 
