@@ -39,12 +39,12 @@ func GenerateMnemonic(size uint16) (Mnemonic, error) {
 	// Get new entropy
 	ent, err := GenerateEntropy(size)
 
-	if (err != nil) { return Mnemonic{}, err }
+	if (err != nil) { return Mnemonic{}, mnemonicError{Message: err.Error()} }
 
 	// Get entropy + checksum
 	checksum, checksumErr := ent.GenerateChecksum()
 
-	if (checksumErr != nil) { return Mnemonic{}, checksumErr }
+	if (checksumErr != nil) { return Mnemonic{}, mnemonicError{Message: checksumErr.Error()} }
 
 	fullData := append(ent.Data, checksum)
 

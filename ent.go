@@ -72,5 +72,7 @@ func (ent entropy) GenerateChecksum() (byte, error) {
 	// Read the first (entropy's bits / 32) bits of the entropy data
 	checksum, err := bitReader.Read32(uint(ent.Size / 32))
 
-	return byte(checksum), err
+	if (err != nil) { return 0, entropyError{ Message: err.Error() }}
+
+	return byte(checksum), nil
 }
