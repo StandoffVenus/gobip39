@@ -6,6 +6,8 @@ package gobip39
 import (
 	"crypto/sha256"
 	"crypto/rand"
+	"github.com/32bitkid/bitreader"
+	"bytes"
 )
 
 const (
@@ -58,8 +60,17 @@ func GenerateEntropy(size uint16) (entropy, error) {
 }
 
 // Generate checksum will return a checksum of the given entropy
-// via the specification, returning said checksum as a byte array.
-func (ent entropy) GenerateChecksum() []byte {
-	// Get hash data from 0 to amount of entropy's bits / 32
-	return ent.Data[:ent.Size / 32]
+// via the specification, returning said checksum as a byte. An empty
+// byte and error will be returned if an error is encountered while
+// trying to read the checksum.
+func (ent entropy) GenerateChecksum() (byte, error) {
+	// Convert entropy data to a Reader
+	byteReader := bytes.NewReader(ent.Data)
+
+	bitReader := bitreader.NewBitReader(byteReader)
+
+	// Read the first (entropy's bits / 32) bits of the entropy data
+	checksum, err := bitReader.Read32(uint(ent.Size / 32))
+
+	return byte(checksum), err
 }

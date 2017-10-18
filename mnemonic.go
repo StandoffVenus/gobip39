@@ -28,13 +28,13 @@ func (err mnemonicError) Error() string {
 // Type to wrap mnemonic-related methods
 type Mnemonic struct {
 	Entropy entropy
-	Checksum []byte
+	Checksum byte
 	Sentence []uint32
 }
 
 // Generate mnemonic sentence based on the size of entropy bits.
-// An error is returned when there is an error generating entropy,
-// or when there is an error reading bits from entropy + checksum.
+// An error is returned when there is an error, in which case the
+// Mnemomic returned will be in an undefined state.
 func GenerateMnemonic(size uint16) (Mnemonic, error) {
 	// Get new entropy
 	ent, err := GenerateEntropy(size)
@@ -42,8 +42,11 @@ func GenerateMnemonic(size uint16) (Mnemonic, error) {
 	if (err != nil) { return Mnemonic{}, err }
 
 	// Get entropy + checksum
-	checksum := ent.GenerateChecksum()
-	fullData := append(ent.Data, checksum...)
+	checksum, checksumErr := ent.GenerateChecksum()
+
+	if (checksumErr != nil) { return Mnemonic{}, checksumErr }
+
+	fullData := append(ent.Data, checksum)
 
 	// Get byte reader from concatenation of entropy and checksum
 	byteReader := bytes.NewReader(fullData)
