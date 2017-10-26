@@ -3,6 +3,9 @@ package wordlist
 import (
 	"bufio"
 	"os"
+	"runtime"
+	"path"
+	"errors"
 )
 
 // This file contains the English Wordlist
@@ -11,12 +14,30 @@ import (
 // English a more descriptive type.
 type english struct {}
 
+// Helper method to get the location to the current directory
+func getCurrentDirectory() (string, error) {
+	// Get the path to the current file
+	_, filepath, _, ok := runtime.Caller(0)
+
+	if (!ok) {
+		return "", errors.New("Could not get the path to the current directory.")
+	}
+
+	return path.Dir(filepath), nil
+}
+
 func (wl english) Language() string {
 	return "English"
 }
 
 func (wl english) Words() ([WordlistSize]string, error) {
-	wordlistFile, err := os.Open("english.txt")
+	directory, directoryErr := getCurrentDirectory()
+
+	if (directoryErr != nil) {
+		return [2048]string{}, wordlistError{Message: directoryErr.Error()}
+	}
+
+	wordlistFile, err := os.Open(path.Join(directory, "english.txt"))
 
 	if (err != nil) {
 		return [2048]string{}, wordlistError{Message: err.Error()}
@@ -35,7 +56,7 @@ func (wl english) Words() ([WordlistSize]string, error) {
 		}
 
 		// Read up to second to last character in word because it will be the newline
-		words[i] = word[:len(word) - 2]
+		words[i] = word[:len(word) - 1]
 	}
 
 	return words, nil
@@ -46,7 +67,13 @@ func (wl english) GetWordAt(index uint32) (string, error) {
 		return "", wordlistError{Message: "Index out of range."}
 	}
 
-	wordlistFile, err := os.Open("english.txt")
+	directory, directoryErr := getCurrentDirectory()
+
+	if (directoryErr != nil) {
+		return "", wordlistError{Message: directoryErr.Error()}
+	}
+
+	wordlistFile, err := os.Open(path.Join(directory, "english.txt"))
 
 	if (err != nil) {
 		return "", wordlistError{Message: err.Error()}
@@ -55,7 +82,7 @@ func (wl english) GetWordAt(index uint32) (string, error) {
 	reader := bufio.NewReader(wordlistFile)
 
 	// Skip over index number of lines
-	for i := uint32(0); i < index; i++; {
+	for i := uint32(0); i < index; i++ {
 		_, skippingReadErr := reader.ReadString('\n')
 
 		if (skippingReadErr != nil) {
@@ -70,11 +97,11 @@ func (wl english) GetWordAt(index uint32) (string, error) {
 		return "", wordlistError{Message: finalReadErr.Error()}
 	}
 
-	return word[:len(word) - 2], nil
+	return word[:len(word) - 1], nil
 }
 
 func (wl english) FindWord(word string) int {
-	words, err := wl.Words()[:]
+	words, err := wl.Words()
 
 	if (err != nil) {
 		return -1
