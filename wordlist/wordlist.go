@@ -15,10 +15,14 @@ func (err wordlistError) Error() string {
 
 // A Wordlist must implement
 // 	Language - returns the language that that Wordlist's words are in as a string.
-// 	Words - returns all the words from that Wordlist as a string array of size 2048.
+// 	Words - returns all the words from that Wordlist as a string array of size 2048. Expected to read from a file
+//	  so it is possible to throw an error if there's a problem reading the file. It also expected that all lines in the
+//	  wordlist's file do not exceed the maximum buffer size for bufio's ReadString function. In the case that an error
+//	  is returned, the string array will have no contents.
 // 	GetWordAt - returns word at specified uint32 index in Wordlist's words and potential errors.
 // 	  * GetWordAt will return an error if the index is greater than 2047 or less than 0.
 // 	  * When GetWordAt returns an error, it return an empty string ("")
+//	  * GetWordAt will return an error if reading from the wordlist's file fails
 // 	  * GetWordAt uses uint32 as the index type because of Mnemonic's use of BitReader.Read32.
 // 	    Read32 returns type uint32. This type works for Wordlist's required methods, and although,
 // 	    makes things a little more inconvenient, will remain as such.
@@ -29,7 +33,7 @@ func (err wordlistError) Error() string {
 // Look at English.go for an example.
 type Wordlist interface {
 	Language() string
-	Words() [WordlistSize]string
+	Words() ([WordlistSize]string, error)
 	GetWordAt(uint32) (string, error)
 	FindWord(string) int
 }
