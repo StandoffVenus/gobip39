@@ -1,5 +1,11 @@
 package wordlist
 
+import (
+	"runtime"
+	"errors"
+	"path"
+)
+
 const (
 	WordlistSize = 2048
 )
@@ -61,5 +67,17 @@ func FindWordIn(a []string, b string) int {
 	}
 
 	return -1
+}
+
+// Helper method to get the location to the current directory
+func getCurrentDirectory() (string, error) {
+	// Get the path to the current file
+	_, filepath, _, ok := runtime.Caller(0)
+
+	if (!ok) {
+		return "", errors.New("Could not get the path to the current directory.")
+	}
+
+	return path.Dir(filepath), nil
 }
 

@@ -3,9 +3,7 @@ package wordlist
 import (
 	"bufio"
 	"os"
-	"runtime"
 	"path"
-	"errors"
 )
 
 // This file contains the English Wordlist
@@ -13,18 +11,6 @@ import (
 // struct english to give our global variable
 // English a more descriptive type.
 type english struct {}
-
-// Helper method to get the location to the current directory
-func getCurrentDirectory() (string, error) {
-	// Get the path to the current file
-	_, filepath, _, ok := runtime.Caller(0)
-
-	if (!ok) {
-		return "", errors.New("Could not get the path to the current directory.")
-	}
-
-	return path.Dir(filepath), nil
-}
 
 func (wl english) Language() string {
 	return "English"
