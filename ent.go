@@ -98,8 +98,6 @@ func (ent Entropy) GenerateChecksum() (byte, error) {
 	bitReader := bitreader.NewBitReader(byteReader)
 
 	// Read the first (entropy's bits / 32) bits of the SHA256 digest
-	fmt.Println(ent.Size)
-
 	checksum, err := bitReader.Read32(uint(ent.Size / 32))
 
 	if (err != nil) { return 0, entropyError{ Message: err.Error() }}
