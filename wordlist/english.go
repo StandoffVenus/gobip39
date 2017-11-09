@@ -84,7 +84,7 @@ func (wl english) GetWordAt(index uint32) (string, error) {
 	reader := bufio.NewReader(wordlistFile)
 
 	// Skip over index number of lines
-	for i := uint32(1); i < index; i++ {
+	for i := uint32(0); i < index; i++ {
 		_, skippingReadErr := reader.ReadString('\n')
 
 		if (skippingReadErr != nil) {
