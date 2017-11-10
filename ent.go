@@ -8,7 +8,6 @@ import (
 	"crypto/rand"
 	"github.com/32bitkid/bitreader"
 	"bytes"
-	"fmt"
 )
 
 const (
@@ -66,7 +65,7 @@ func GenerateEntropy(size uint16) (Entropy, error) {
 // the Entropy returned is in an invalid state.
 func GetEntropyFromBytes(data []byte) (Entropy, error) {
 	// Early check to prevent errors from wrap around on uint16 conversion
-	if (int(^uint16(0)) < len(data)) {
+	if (len(data) > int(^uint16(0))) {
 		return Entropy{}, entropyError{Message: "Length of data (in bits) was outside of domain [128, 256]."}
 	}
 
