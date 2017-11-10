@@ -59,7 +59,7 @@ func TestEntropy_GenerateEntropy_ReturnsAnEntropyInstance(t *testing.T) {
 
 func TestEntropy_GetEntropyFromBytes_FailsWhenLengthExceedsUInt16MaxBits(t *testing.T) {
 	// Add 1 to max size of uint16
-	maxPlusOne := int32(^uint16(0))
+	maxPlusOne := int32(^uint16(0)) + 1
 
 	arr := make([]byte, maxPlusOne)
 
