@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"os"
 	"path"
+	"errors"
+	"strings"
 )
 
 // This file contains the English Wordlist
@@ -20,29 +22,30 @@ func (wl english) Words() ([WordlistSize]string, error) {
 	directory, directoryErr := getCurrentDirectory()
 
 	if (directoryErr != nil) {
-		return [2048]string{}, wordlistError{Message: directoryErr.Error()}
+		return [WordlistSize]string{}, wordlistError{Message: directoryErr.Error()}
 	}
 
 	wordlistFile, err := os.Open(path.Join(directory, "english.txt"))
 
 	if (err != nil) {
-		return [2048]string{}, wordlistError{Message: err.Error()}
+		return [WordlistSize]string{}, wordlistError{Message: err.Error()}
 	}
 
 	reader := bufio.NewReader(wordlistFile)
 
 	// Forward declare this fixed-size string array
-	var words [2048]string
+	var words [WordlistSize]string
 
-	for i := 0; i < 2048; i++ {
+	for i := 0; i < WordlistSize; i++ {
 		word, readErr := reader.ReadString('\n')
 
 		if (readErr != nil) {
-			return [2048]string{}, wordlistError{Message: readErr.Error()}
+			return [WordlistSize]string{}, wordlistError{Message: readErr.Error()}
 		}
 
 		// Read up to second to last character in word because it will be the newline
-		words[i] = word[:len(word) - 1]
+		// and then we must remove a possible \r because Windows
+		words[i] = strings.Replace(word[:len(word) - 1], "\r", "", -1)
 	}
 
 	return words, nil
@@ -83,7 +86,8 @@ func (wl english) GetWordAt(index uint32) (string, error) {
 		return "", wordlistError{Message: finalReadErr.Error()}
 	}
 
-	return word[:len(word) - 1], nil
+	// Trim possible \r from word
+	return strings.Replace(word[:len(word) - 1], "\r", "", -1), nil
 }
 
 func (wl english) FindWord(word string) int {

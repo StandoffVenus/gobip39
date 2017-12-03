@@ -53,7 +53,9 @@ func FindWordIn(a []string, b string) int {
 	var index int
 
 	for {
-		if (high < low) { break }
+		if (high < low) {
+			return -1
+		}
 
 		index = (low + high) / 2
 
@@ -65,8 +67,6 @@ func FindWordIn(a []string, b string) int {
 			return index
 		}
 	}
-
-	return -1
 }
 
 // Helper method to get the location to the current directory

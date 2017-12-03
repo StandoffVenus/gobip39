@@ -17,14 +17,16 @@ const (
 
 // Generate the binary seed, with an optional passphrase, from a mnemonic sentence.
 func GenerateBinarySeed(mnemonic string, passphrase ...string) []byte{
-	_passphrase := ""
+	// mnemonic is a required prefix in all passphrases
+	_passphrase := "mnemonic"
 
+	// If there are any arguments passed, assume the first one is the passphrase.
 	if (passphrase != nil) {
-		_passphrase = passphrase[0]
+		_passphrase += passphrase[0]
 	}
 
 	normalizedMnemonic := norm.NFKD.Bytes([]byte(mnemonic))
-	normalizedPassphrase := norm.NFKD.Bytes([]byte("mnemonic" + _passphrase))
+	normalizedPassphrase := norm.NFKD.Bytes([]byte(_passphrase))
 
 	// The reason we do not have to pass HMAC-SHA512.New is because of the fact that
 	// pbkdf2.Key will call HMAC on passwords for you.
