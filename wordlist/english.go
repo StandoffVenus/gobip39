@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"os"
 	"path"
-	"errors"
 	"strings"
 )
 
