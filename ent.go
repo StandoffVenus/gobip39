@@ -52,7 +52,11 @@ func GenerateEntropy(size uint16) (Entropy, error) {
 
 	// Read random bytes
 	randomBytes := make([]byte, size / 8)
-	rand.Read(randomBytes)
+	_, err := rand.Read(randomBytes)
+
+	if (err != nil) {
+		return Entropy{}, entropyError{Message: err.Error()}
+	}
 
 	// Return Entropy from these random bytes
 	return GetEntropyFromBytes(randomBytes)
