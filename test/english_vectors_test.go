@@ -1,6 +1,7 @@
 package test
 
 import (
+	"flag"
 	"testing"
 	"io/ioutil"
 	"encoding/json"
@@ -9,6 +10,7 @@ import (
 	"gobip39/wordlist"
 	"strings"
 	"bytes"
+	"path"
 )
 
 /*
@@ -22,11 +24,24 @@ type Vector []string
 // The passphrase is "TREZOR" for all tests
 const PASSPHRASE = "TREZOR"
 
+// The vector file to test from
+var filePath string
+
+func init() {
+	// Grab the file name from command-line if there
+	fileName := flag.String("filename", "english_vectors", "File containing vectors for testing.")
+
+	// Parses the command-line args
+	flag.Parse()
+
+	filePath = path.Join(".", *fileName) + ".json"
+}
+
 func TestEnglishVectors(t *testing.T) {
-	file, err := ioutil.ReadFile("./vectors.json")
+	file, err := ioutil.ReadFile(filePath)
 
 	if (err != nil) {
-		t.Error("Failed to read from required vector file 'english_vectors.json':", err.Error())
+		t.Error("Failed to read from required vector file '" + filePath + "':", err.Error())
 	}
 
 	// Anonymous struct that holds vectors
