@@ -144,8 +144,8 @@ func TestEntropy_GenerateChecksum_ReturnsByteHoldingChecksum(t *testing.T) {
 	firstByte := shaHash.Sum(nil)[0]
 
 	// Need to disregard last 4 bits since checksum only will read the first 4 bits.
-	// However, this is future proofed, hence the subtraction from 8.
-	// This is how checksum's length is calculated.
+	// However, I chose to write this in a way that the size of the entropy can be changed,
+	// hence the subtraction from 8. This is how checksum's length is calculated.
 	expectedChecksum := firstByte >> (8 - ent.Size / 32)
 
 	if checksum != expectedChecksum {
