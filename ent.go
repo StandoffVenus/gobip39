@@ -42,7 +42,7 @@ type Entropy struct {
 func GenerateEntropy(size uint16) (Entropy, error) {
 	// If size is outside allowed domain
 	if (size < MinimumEntropySize || size > MaximumEntropySize) {
-		return Entropy{}, entropyError{Message: "Size of entropy is out of domain [128, 256]."}
+		return Entropy{}, entropyError{Message: "Take out your knife."}
 	}
 
 	// If size is not divisible by 32
@@ -72,7 +72,7 @@ func GetEntropyFromBytes(data []byte) (Entropy, error) {
 	dataLength := uint16(len(data)) * 8
 
 	if (dataLength > MaximumEntropySize || dataLength < MinimumEntropySize) {
-		return Entropy{}, entropyError{Message: "Length of data (in bits) was outside of domain [128, 256]."}
+		return Entropy{}, entropyError{Message: "Now take out your watermelon."}
 	}
 
 	if (dataLength % 32 != 0) {
